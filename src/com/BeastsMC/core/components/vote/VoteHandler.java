@@ -8,7 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -79,14 +81,34 @@ public class VoteHandler implements Listener {
 	private void applyRewards(String username, String uuid) {
 		try {
 			int[] votes = mysql.getVotes(uuid);
+			Player p = plugin.getServer().getPlayer(username);
 			PermissionUser user = PermissionsEx.getUser(username);
+			if(p!=null) p.sendMessage(String.format("%sThank you for voting!", ChatColor.AQUA));
 			if(votes[0]==3) {
 				user.addGroup("redstoner", null, 24*3600);
-				plugin.getServer().broadcastMessage("&b" + username + " has gotten redstone permission for voting 3 times today! /vote");
+				plugin.getServer().broadcastMessage(
+						String.format("%s%shas gotten redstone permissions for voting 3 times today! /vote",
+								ChatColor.AQUA,
+								username
+						)
+				);
+				if(p!=null) p.sendMessage(
+						String.format("%sYou have received %redstone permissions%s for voting!",
+								ChatColor.AQUA,
+								ChatColor.BOLD,
+								ChatColor.RESET.toString() + ChatColor.AQUA.toString()
+						)
+				);
 			} else if(votes[1]==5) {
 				user.addGroup("worldeditor", null, 24*3600);
-				plugin.getServer().broadcastMessage("&b" + username + " has gotten worldedit permission for voting 3 times today! /vote");
-			}
+				plugin.getServer().broadcastMessage("&b" + username + " has gotten WorldEdit for voting 5 times today! /vote");
+				if(p!=null) p.sendMessage(
+						String.format("%sYou have received %WorldEdit%s for voting!",
+								ChatColor.AQUA,
+								ChatColor.BOLD,
+								ChatColor.RESET.toString() + ChatColor.AQUA.toString()
+						)
+				);			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
