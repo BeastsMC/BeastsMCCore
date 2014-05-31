@@ -1,0 +1,5 @@
+name: BeastsMCCore
+main: com.BeastsMC.core.BeastsMCCore
+author: TheBeast808
+depend: [CommandBook, WorldEdit, Votifier]
+version: 1.0.1

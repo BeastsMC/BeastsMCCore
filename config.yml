@@ -1,0 +1,6 @@
+mysql:
+  username: 'root'
+  password: 'zanepepsi808'
+  database: 'core'
+  host: 'localhost'
+  port: '3306'
