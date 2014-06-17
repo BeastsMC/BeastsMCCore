@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import com.BeastsMC.core.customization.CommandBookTeleport;
+import com.BeastsMC.core.tpablock.CommandBookTeleport;
 
 public class CoreListeners implements Listener {
 

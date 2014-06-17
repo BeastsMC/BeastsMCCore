@@ -4,24 +4,26 @@ package com.BeastsMC.core;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 import com.BeastsMC.core.commands.FakeVote;
+import com.BeastsMC.core.commands.Latency;
 import com.BeastsMC.core.commands.SetMotd;
 import com.BeastsMC.core.commands.TpaBlock;
+import com.BeastsMC.core.commands.Vote;
 import com.BeastsMC.core.components.vote.VoteHandler;
+import com.BeastsMC.core.tpablock.CommandBookTeleport;
 import com.sk89q.bukkit.util.CommandsManagerRegistration;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
 import com.sk89q.minecraft.util.commands.CommandUsageException;
 import com.sk89q.minecraft.util.commands.CommandsManager;
 import com.sk89q.minecraft.util.commands.MissingNestedCommandException;
+import com.sk89q.minecraft.util.commands.SimpleInjector;
 import com.sk89q.minecraft.util.commands.WrappedCommandException;
 
 
@@ -30,23 +32,26 @@ public class BeastsMCCore extends JavaPlugin {
 	private Map<String, Object> components = new HashMap<String, Object>();
 	private CommandsManager<CommandSender> commands;
 	public void onEnable() {
+		saveDefaultConfig();
+		components.put("votehandler", new VoteHandler(this));
+		components.put("tpablock", new CommandBookTeleport(this));
 		setupCommands();
 	}
 	private void setupCommands() {
-		saveDefaultConfig();
 		commands = new CommandsManager<CommandSender>() {
 			@Override
 			public boolean hasPermission(CommandSender sender, String perm) {
 				return sender instanceof ConsoleCommandSender || sender.hasPermission(perm);
 			}
 		};
+		commands.setInjector(new SimpleInjector(this));
 		CommandsManagerRegistration cmdRegister = new CommandsManagerRegistration(this, this.commands);
 		cmdRegister.register(SetMotd.class);
 		cmdRegister.register(FakeVote.class);
-		cmdRegister.register(new TpaBlock(this).getClass());
+		cmdRegister.register(Vote.class);
+		cmdRegister.register(TpaBlock.class);
+		cmdRegister.register(Latency.class);
 		
-		//Load vote component
-		components.put("votehandler", new VoteHandler(this));
 	}
 
 	public Object getComponent(String simpleName) {

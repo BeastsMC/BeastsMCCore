@@ -23,7 +23,7 @@ public class VoteMySQLHandler {
 		user = username;
 		pass = password;
 		dbConn = DriverManager.getConnection(url, user, pass);
-		dbConn.prepareStatement("CREATE TABLE IF NOT EXISTS votecount (username VARCHAR(32) not NULL, uuid VARCHAR(32) not NULL, daily TINYINT(1) not NULL, monthly SMALLINT(2) not NULL, PRIMARY KEY(uuid))").execute();
+		dbConn.prepareStatement("CREATE TABLE IF NOT EXISTS votecount (username VARCHAR(16) not NULL, uuid VARCHAR(36) not NULL, daily TINYINT(1) not NULL, monthly SMALLINT(2) not NULL, PRIMARY KEY(uuid))").execute();
 	}
 	
 	private Connection getConnection() {
@@ -32,7 +32,6 @@ public class VoteMySQLHandler {
 				dbConn = DriverManager.getConnection(url, user, pass);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return dbConn;

@@ -27,7 +27,7 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 public class VoteHandler implements Listener {
 
 	private final BeastsMCCore plugin;
-	protected VoteMySQLHandler mysql;
+	public VoteMySQLHandler mysql;
 	public boolean enabled = false;
 	private List<String[]> failed = new LinkedList<String[]>();
 	protected YamlConfiguration voteConf;
@@ -66,10 +66,10 @@ public class VoteHandler implements Listener {
 		plugin.getLogger().info(event.getVote().toString());
 		Vote vote = event.getVote();
 		String username = vote.getUsername();
-		if(username==null || username.equals(" ")) return;
+		if(username==null || username.equals("")) return;
 		if(!Bukkit.getOfflinePlayer(username).hasPlayedBefore()) return;
 		try {
-			String uuid = new UUIDFetcher(Arrays.asList(username)).call().get(username).toString().replace("-", "");
+			String uuid = new UUIDFetcher(Arrays.asList(username)).call().get(username).toString();
 			incrementVote(username, uuid);
 			applyRewards(username, uuid);
 		} catch (Exception e) {
@@ -85,25 +85,32 @@ public class VoteHandler implements Listener {
 			PermissionUser user = PermissionsEx.getUser(username);
 			if(p!=null) p.sendMessage(String.format("%sThank you for voting!", ChatColor.AQUA));
 			if(votes[0]==3) {
+				if(user.inGroup("redstoner")) return;
 				user.addGroup("redstoner", null, 24*3600);
 				plugin.getServer().broadcastMessage(
-						String.format("%s%shas gotten redstone permissions for voting 3 times today! /vote",
+						String.format("%s%s has gotten redstone permissions for voting 3 times today! /vote",
 								ChatColor.AQUA,
 								username
 						)
 				);
 				if(p!=null) p.sendMessage(
-						String.format("%sYou have received %redstone permissions%s for voting!",
+						String.format("%sYou have received %sredstone permissions%s for voting!",
 								ChatColor.AQUA,
 								ChatColor.BOLD,
 								ChatColor.RESET.toString() + ChatColor.AQUA.toString()
 						)
 				);
-			} else if(votes[1]==5) {
+			} else if(votes[0]==5) {
+				if(user.inGroup("worldeditor")) return;
 				user.addGroup("worldeditor", null, 24*3600);
-				plugin.getServer().broadcastMessage("&b" + username + " has gotten WorldEdit for voting 5 times today! /vote");
+				plugin.getServer().broadcastMessage(
+						String.format("%s%s has gotten WorldEdit for voting 5 times today! /vote",
+								ChatColor.AQUA,
+								username
+						)
+				);
 				if(p!=null) p.sendMessage(
-						String.format("%sYou have received %WorldEdit%s for voting!",
+						String.format("%sYou have received %sWorldEdit%s for voting!",
 								ChatColor.AQUA,
 								ChatColor.BOLD,
 								ChatColor.RESET.toString() + ChatColor.AQUA.toString()
@@ -146,6 +153,10 @@ public class VoteHandler implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public List<String> getVoteLinks() {
+		return voteConf.getStringList("links");
 	}
 
 }

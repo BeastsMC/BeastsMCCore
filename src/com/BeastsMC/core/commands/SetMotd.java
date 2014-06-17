@@ -8,14 +8,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 
+import com.BeastsMC.core.BeastsMCCore;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 
 public class SetMotd {
+	private final BeastsMCCore plugin;
+	public SetMotd(BeastsMCCore core) {
+		this.plugin = core;
+	}
 	@CommandPermissions(value = { "beastsmccore.setmotd" })
 	@Command(aliases = { "setmotd", "test"}, desc = "Sets the MOTD for the server.", usage = "[motd] - message to use", min = 1)
-	public static void setmotd(final CommandContext args, CommandSender sender) {
+	public void setmotd(final CommandContext args, CommandSender sender) {
 		String motd = args.getJoinedStrings(0);
 		motd = motd.replaceAll("&", String.valueOf(ChatColor.COLOR_CHAR));
 		try {

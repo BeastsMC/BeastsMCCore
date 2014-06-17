@@ -17,11 +17,11 @@ public class VoteResetter extends BukkitRunnable {
 		try {
 			if(current>voteHandler.voteConf.getLong("daily")) {
 				voteHandler.mysql.clearDaily();
-				voteHandler.updateResetTime(current+(24*3600*1000), true);
+				voteHandler.updateResetTime(current+(1000*60*60*24), true);
 			}
 			if(current>voteHandler.voteConf.getLong("monthly")) {
 				voteHandler.mysql.clearMonthly();
-				voteHandler.updateResetTime(current+(30*24*3600*1000), false);
+				voteHandler.updateResetTime(current+(1000*60*60*24*30), false);
 			}
 		} catch(SQLException e) {
 				e.printStackTrace();
